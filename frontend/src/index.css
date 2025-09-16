@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-tekhelet: #3d348bff;
+  --color-medium-slate-blue: #7678edff;
+  --color-selective-yellow: #f7b801ff;
+  --color-tangerine: #f18701ff;
+  --color-persimmon: #f35b04ff;
+}
+
+html, body, #root {
+  height: 100%;
+}
