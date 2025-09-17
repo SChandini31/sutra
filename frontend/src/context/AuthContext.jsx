@@ -5,8 +5,17 @@ const AuthContext = createContext(null);
 
 // Axios instance pointing to your backend
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000" // remove /api
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api" // remove /api
 });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
@@ -67,7 +76,18 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  const value = useMemo(() => ({ token, role, user, login, signup, logout, api }), [
+  const updateProfile = async (payload) => {
+    try {
+      const { data } = await api.put("/profile/update", payload);
+      return data;
+    } catch (err) {
+      console.error("Profile update failed:", err.response?.data || err.message);
+      throw err;
+    }
+  };
+  
+
+  const value = useMemo(() => ({ token, role, user, login, signup, logout, updateProfile, api }), [
     token,
     role,
     user

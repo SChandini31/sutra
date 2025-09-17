@@ -16,6 +16,7 @@ export default function DashboardLayout() {
     ],
     admin: [
       { to: "/dashboard/admin", label: "Dashboard" },
+      { to: "/profile", label: "Profile" },
     ],
     parent: [
       { to: "/dashboard/parent", label: "Dashboard" },
@@ -27,7 +28,6 @@ export default function DashboardLayout() {
   return (
     <div className="dash-grid">
       <aside className="dash-aside">
-        <div className="brand">Sutra</div>
         <nav className="dash-nav">
           {navItems.map((l) => (
             <NavLink key={l.to} to={l.to} className={({ isActive }) => `dash-link${isActive ? ' active' : ''}`}>

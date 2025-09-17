@@ -21,13 +21,16 @@ export default function StudentDashboard() {
         }
       } catch {
         setError("Failed to load dashboard");
-      } finally { setLoading(false); }
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
 
   return (
     <div className="dashboard-container">
+      {/* KPI Cards */}
       <div className="kpi-grid">
         <div className="kpi-card kpi-gpa">
           <div className="kpi-label">GPA</div>
@@ -43,18 +46,100 @@ export default function StudentDashboard() {
         </div>
       </div>
 
+      {/* Insights */}
+      <div className="insights-grid">
+        {/* GPA Trend */}
+        <div className="insight-card">
+          <h3>Performance Trend (GPA)</h3>
+          <div className="chart">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <polyline
+                fill="url(#grad)"
+                stroke="#7678ED"
+                strokeWidth="2"
+                points="0,80 40,70 80,60 120,50 160,55 200,45"
+              />
+              <defs>
+                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7678ED" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#7678ED" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <p className="hint">GPA over semesters</p>
+        </div>
+
+        {/* Attendance Heatmap */}
+        <div className="insight-card">
+          <h3>Attendance Heatmap</h3>
+          <div className="heatmap">
+            {Array.from({ length: 35 }).map((_, idx) => {
+              const val = Math.floor(Math.random() * 100);
+              return (
+                <div
+                  key={idx}
+                  className="heatmap-cell"
+                  style={{ backgroundColor: `rgba(61,52,139,${val / 100})` }}
+                  title={`${val}%`}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Subject Performance */}
+        <div className="insight-card">
+          <h3>Subject Performance</h3>
+          <div className="bars">
+            {["Math", "Physics", "Chemistry", "CS", "English"].map(
+              (sub, idx) => {
+                const score = [82, 76, 88, 92, 79][idx];
+                return (
+                  <div key={idx} className="bar-item">
+                    <div className="bar-label">{sub}</div>
+                    <div className="bar-track">
+                      <div
+                        className="bar-fill"
+                        style={{ width: `${score}%` }}
+                      >
+                        <span>{score}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Profile */}
       <div className="panel">
         <div className="panel-header">Profile</div>
         {loading && <div className="hint">Loading…</div>}
         {error && <div className="error">{error}</div>}
         <div className="profile-grid">
-          <div><span className="muted">Name</span><div className="strong">{profile?.name || '-'}</div></div>
-          <div><span className="muted">Department</span><div className="strong">{profile?.department || '-'}</div></div>
-          <div><span className="muted">College</span><div className="strong">{profile?.college || '-'}</div></div>
-          <div><span className="muted">Year</span><div className="strong">{profile?.year || '-'}</div></div>
+          <div>
+            <span className="muted">Name</span>
+            <div className="strong">{profile?.name || "-"}</div>
+          </div>
+          <div>
+            <span className="muted">Department</span>
+            <div className="strong">{profile?.department || "-"}</div>
+          </div>
+          <div>
+            <span className="muted">College</span>
+            <div className="strong">{profile?.college || "-"}</div>
+          </div>
+          <div>
+            <span className="muted">Year</span>
+            <div className="strong">{profile?.year || "-"}</div>
+          </div>
         </div>
       </div>
 
+      {/* Marks */}
       <div className="panel">
         <div className="panel-header">Marks</div>
         <div className="table-wrap">
@@ -79,6 +164,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
+      {/* Internal CSS */}
       <style>{`
         /* Container */
         .dashboard-container {
@@ -112,6 +198,71 @@ export default function StudentDashboard() {
         .kpi-gpa { border-top-color: #3D348B; }
         .kpi-credits { border-top-color: #7678ED; }
         .kpi-attendance { border-top-color: #F7B801; }
+
+        /* Insights Grid */
+        .insights-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 20px;
+        }
+        .insight-card {
+          background: #fff;
+          border-radius: 12px;
+          padding: 16px;
+          box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+        }
+        .insight-card h3 {
+          margin-bottom: 12px;
+          color: #3D348B;
+        }
+        .chart {
+          width: 100%;
+          height: 150px;
+        }
+        .chart svg {
+          width: 100%;
+          height: 100%;
+        }
+
+        /* Heatmap */
+        .heatmap {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 6px;
+          padding: 10px;
+        }
+        .heatmap-cell {
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          transition: transform 0.2s, background-color 0.2s;
+        }
+        .heatmap-cell:hover {
+          transform: scale(1.1);
+          background-color: #FF6B35 !important;
+        }
+
+        /* Bars */
+        .bars { display: flex; flex-direction: column; gap: 12px; }
+        .bar-item { display: flex; flex-direction: column; }
+        .bar-label { font-size: 0.9rem; margin-bottom: 4px; color: #2e2e2e; }
+        .bar-track { background: #f0f0f0; border-radius: 8px; overflow: hidden; }
+        .bar-fill {
+          background: linear-gradient(90deg, #3D348B, #7678ED);
+          color: white;
+          font-size: 0.8rem;
+          font-weight: 600;
+          padding: 4px 6px;
+          border-radius: 8px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          transition: background 0.3s;
+        }
+        .bar-fill:hover {
+          background: linear-gradient(90deg, #F7B801, #FF6B35);
+        }
+        .bar-fill span { margin-left: 6px; }
 
         /* Panels */
         .panel {
@@ -158,12 +309,11 @@ export default function StudentDashboard() {
         .error { color: #FF6B35; padding: 12px; text-align: center; }
         .hint { color: #7678ED; padding: 12px; text-align: center; }
 
-        /* Animations */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );
 }
+
 
 
 

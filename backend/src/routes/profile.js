@@ -21,18 +21,25 @@ router.get('/', requireAuth, requireRole(['student', 'faculty', 'admin', 'parent
 
 router.put('/update', requireAuth, requireRole(['student']), async (req, res) => {
   try {
+    console.log("Update request body:", req.body);  // 👈 log the incoming data
+    console.log("User ID:", req.user.id);           // 👈 log the logged in user
+
     const { name, college, department, year, dob, additional_details } = req.body || {};
     const existing = await prisma.studentProfile.findUnique({ where: { userId: req.user.id } });
     if (!existing) return res.status(404).json({ error: 'Profile not found' });
+
     const updated = await prisma.studentProfile.update({
       where: { id: existing.id },
       data: { name, college, department, year, dob, additional_details },
     });
+
     return res.json(updated);
   } catch (e) {
+    console.error("Update profile error:", e);   // 👈 show full error in terminal
     return res.status(500).json({ error: 'Failed to update profile' });
   }
 });
+
 
 export default router;
 

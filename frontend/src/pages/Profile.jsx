@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Profile() {
-  const { api } = useAuth();
-  const [form, setForm] = useState({ name: "", college: "", department: "", year: "", dob: "", additional_details: "" });
+  const { api, updateProfile } = useAuth(); // ✅ use updateProfile
+  const [form, setForm] = useState({
+    name: "",
+    college: "",
+    department: "",
+    year: "",
+    dob: "",
+    additional_details: ""
+  });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -18,13 +25,16 @@ export default function Profile() {
           department: data?.department || "",
           year: data?.year || "",
           dob: data?.dob || "",
-          additional_details: data?.additional_details || "",
+          additional_details: data?.additional_details || ""
         });
-      } catch {
-      } finally { setLoading(false); }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
-  }, []);
+  }, [api]);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -32,31 +42,35 @@ export default function Profile() {
     e.preventDefault();
     setMessage("");
     try {
-      await api.put("/profile/update", form);
-      setMessage("Profile updated");
-    } catch {
-      setMessage("Update failed");
+      const { data } = await api.put("/profile/update", form); // 👈 PUT call
+      setMessage("Profile updated successfully!");
+      console.log("Updated profile:", data);
+    } catch (err) {
+      console.error("Profile update error:", err.response?.data || err.message);
+      setMessage("Update failed. Please try again.");
     }
   };
 
   return (
-    <form onSubmit={onSubmit} className="profile-form">
-      <div className="form-header">
-        <div className="title">Edit Profile</div>
-        {loading && <span className="hint">Loading…</span>}
-      </div>
-      {message && <div className="info">{message}</div>}
-      <div className="grid">
-        <input name="name" placeholder="Name" className="input" value={form.name} onChange={onChange} />
-        <input name="college" placeholder="College" className="input" value={form.college} onChange={onChange} />
-        <input name="department" placeholder="Department" className="input" value={form.department} onChange={onChange} />
-        <input name="year" placeholder="Year" className="input" value={form.year} onChange={onChange} />
-        <input name="dob" placeholder="Date of Birth" className="input" value={form.dob} onChange={onChange} />
-        <input name="additional_details" placeholder="Additional Details" className="input" value={form.additional_details} onChange={onChange} />
-      </div>
-      <div className="actions">
-        <button className="btn-primary">Save</button>
-      </div>
+    <>
+      <form onSubmit={onSubmit} className="profile-form">
+        <div className="form-header">
+          <div className="title">Edit Profile</div>
+          {loading && <span className="hint">Loading…</span>}
+        </div>
+        {message && <div className="info">{message}</div>}
+        <div className="grid">
+          <input name="name" placeholder="Name" className="input" value={form.name} onChange={onChange} />
+          <input name="college" placeholder="College" className="input" value={form.college} onChange={onChange} />
+          <input name="department" placeholder="Department" className="input" value={form.department} onChange={onChange} />
+          <input name="year" placeholder="Year" className="input" value={form.year} onChange={onChange} />
+          <input name="dob" placeholder="Date of Birth" className="input" value={form.dob} onChange={onChange} />
+          <input name="additional_details" placeholder="Additional Details" className="input" value={form.additional_details} onChange={onChange} />
+        </div>
+        <div className="actions">
+          <button className="btn-primary">Save</button>
+        </div>
+      </form>
 
       <style>{`
         .profile-form { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 6px 18px rgba(16,24,40,0.06); padding: 16px; max-width: 900px; }
@@ -71,8 +85,9 @@ export default function Profile() {
         .actions { display: flex; justify-content: end; margin-top: 10px; }
         .btn-primary { padding: 10px 12px; background: #3EB489; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
       `}</style>
-    </form>
+    </>
   );
 }
+
 
 

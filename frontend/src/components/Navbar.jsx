@@ -28,7 +28,7 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar-container">
         <NavLink to={token ? (links[0]?.to || "/") : "/"} className="logo">
-         <img src="/logo.png" alt="logo" width={72} height={50} href={"/"} />
+         <img src="/image.png" alt="Sutra"/>
         </NavLink>
 
         <nav className="nav-links">
@@ -62,19 +62,22 @@ export default function Navbar() {
           position: sticky;
           top: 0;
           width: 100%;
-          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(10px);
-          border-bottom: 1px solid #ddd;
-          z-index: 1000;
+           z-index: 1000;
         }
+        .navbar img{
+            border-radius: 9px;
+            width: 130px;
+           }
         .navbar-container {
           max-width: 1200px;
           margin: 0 auto;
           padding: 0 20px;
-          height: 50px;
+          height: 60px;
           display: flex;
           align-items: center;
           justify-content: space-between;
+          border-radius: 50%;
         }
 
         .logo {
@@ -85,27 +88,27 @@ export default function Navbar() {
 
         .nav-links {
           display: flex;
-          gap: 20px;
+          gap: 30px;
         }
         .nav-links a {
           text-decoration: none;
-          color: #2E2E2E;
+          color: darkblue;
           font-size: 0.95rem;
           padding: 6px 8px;
           border-radius: 4px;
         }
         .nav-links a:hover {
-          color: #3D348B;
+          color:rgb(30, 7, 243);
           background: rgba(0,0,0,0.05);
         }
         .nav-links a.active {
           color: #3D348B;
-          font-weight: 600;
+          font-weight: 900;
         }
 
         .auth-buttons {
           display: flex;
-          gap: 10px;
+          gap: 15px;
         }
         .btn-primary {
           background-color: #7678ED;
@@ -114,7 +117,7 @@ export default function Navbar() {
           padding: 8px 16px;
           border-radius: 6px;
           text-decoration: none;
-          cursor: pointer;
+          cursor: bubble;
         }
         .btn-secondary {
           background-color: white;
@@ -123,7 +126,7 @@ export default function Navbar() {
           padding: 8px 16px;
           border-radius: 6px;
           text-decoration: none;
-          cursor: pointer;
+          cursor: bubble;
         }
         .btn-logout {
           background-color: #FF6B35;
@@ -131,10 +134,10 @@ export default function Navbar() {
           border: none;
           padding: 8px 16px;
           border-radius: 6px;
-          cursor: pointer;
+          cursor: bubble;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 760px) {
           .nav-links {
             display: none;
           }
